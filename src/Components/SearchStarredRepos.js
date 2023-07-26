@@ -22,17 +22,11 @@ function SearchStarredRepos() {
 					setResults(undefined);
 					return;
 				}
-				
+
 				// filter results for repos with stars in decending order
-				const filterStarredRepos = userRepos.filter(
-					(repo) => repo.stargazers_count > 0
-				);
+				const filtered = filterStarredRepos(userRepos);
+				setResults(sortedDecendingOrder(filtered));
 
-				const sortedDecendingOrder = filterStarredRepos.sort(
-					(a, b) => b.stargazers_count - a.stargazers_count
-				);
-
-				setResults(sortedDecendingOrder);
 				setError(false);
 				setIsLoading(false);
 			}, 300);
@@ -42,48 +36,53 @@ function SearchStarredRepos() {
 		}
 	}, [user]);
 
+	//filter functions
+	const filterStarredRepos = (fetchedRepos) => {
+		return fetchedRepos.filter((repo) => repo.stargazers_count > 0);
+	};
+
+	const sortedDecendingOrder = (repos) => {
+		return repos.sort((a, b) => b.stargazers_count - a.stargazers_count);
+	};
+
 	return (
 		<div>
-			<>
-				<label htmlFor="search-github-users" className="label">
-					<b>Search Github Users</b>
-				</label>
-				<p>
-					Search any user in Github and find repositories with the most stars
+			<label htmlFor="search-github-users" className="label">
+				<b>Search Github Users</b>
+			</label>
+			<p>Search any user in Github and find repositories with the most stars</p>
+			<input
+				className="search"
+				type="text"
+				placeholder="Search user..."
+				value={user}
+				id="search-github-users"
+				onChange={(event) => setUser(event.target.value)}
+			/>
+			{isLoading ? (
+				<>
+					<p>loading...</p>
+				</>
+			) : null}
+			{error ? (
+				<p className="error">
+					<b>No user found</b>
 				</p>
-				<input
-					className="search"
-					type="text"
-					placeholder="Search user..."
-					value={user}
-					id="search-github-users"
-					onChange={(event) => setUser(event.target.value)}
-				/>
-				{isLoading ? (
-					<>
-						<p>loading...</p>
-					</>
-				) : null}
-				{error ? (
-					<p className="error">
-						<b>No user found</b>
-					</p>
-				) : null}
-				<div className="grid">
-					{results
-						? results.map((repos) => (
-								<RepoDataCard
-									key={repos.url}
-									link={repos.html_url}
-									repoName={repos.name}
-									description={repos.description}
-									languages={repos.language}
-									stars={repos.stargazers_count}
-								/>
-						  ))
-						: null}
-				</div>
-			</>
+			) : null}
+			<div className="grid">
+				{results
+					? results.map((repos) => (
+							<RepoDataCard
+								key={repos.id}
+								link={repos.html_url}
+								repoName={repos.name}
+								description={repos.description}
+								languages={repos.language}
+								stars={repos.stargazers_count}
+							/>
+					  ))
+					: null}
+			</div>
 		</div>
 	);
 }
