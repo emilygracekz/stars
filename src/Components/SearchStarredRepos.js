@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import FetchUser from "./FetchUser";
 import RepoDataCard from "./RepoDataCard";
+import TextInput from "./TextInput";
 
 function SearchStarredRepos() {
 	const [user, setUser] = useState("");
@@ -18,6 +19,7 @@ function SearchStarredRepos() {
 
 				// error if no user found
 				if (userRepos.message) {
+					setIsLoading(false);
 					setError(true);
 					setResults(undefined);
 					return;
@@ -51,9 +53,8 @@ function SearchStarredRepos() {
 				<b>Search Github Users</b>
 			</label>
 			<p>Search any user in Github and find repositories with the most stars</p>
-			<input
+			<TextInput
 				className="search"
-				type="text"
 				placeholder="Search user..."
 				value={user}
 				id="search-github-users"
@@ -70,7 +71,7 @@ function SearchStarredRepos() {
 				</p>
 			) : null}
 			<div className="grid">
-				{results.length
+				{results
 					? results.map((repos) => (
 							<RepoDataCard
 								key={repos.id}
