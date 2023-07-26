@@ -24,8 +24,8 @@ function SearchStarredRepos() {
 				}
 
 				// filter results for repos with stars in decending order
-				const filtered = filterStarredRepos(userRepos);
-				setResults(sortedDecendingOrder(filtered));
+				const starredRepos = filterStarredRepos(userRepos);
+				setResults(sortedDecendingOrder(starredRepos));
 
 				setError(false);
 				setIsLoading(false);
@@ -70,7 +70,7 @@ function SearchStarredRepos() {
 				</p>
 			) : null}
 			<div className="grid">
-				{results
+				{results.length
 					? results.map((repos) => (
 							<RepoDataCard
 								key={repos.id}
